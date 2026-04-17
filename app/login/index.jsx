@@ -4,6 +4,7 @@ import { useAuth } from "../../contex/AuthContext";
 import { useRouter } from "expo-router"
 import * as SecureStore from 'expo-secure-store';
 const LoginPage = () => {
+    const apiBaseUrl = process.env.EXPO_PUBLIC_API_URL;
     const router = useRouter();
     const { setAccessToken } = useAuth();
     const [formData, setFormData] = useState({

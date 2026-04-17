@@ -2,8 +2,12 @@ import { useState } from "react";
 import { Pressable, Text, View, Alert, TextInput } from "react-native";
 import { useRouter } from "expo-router"
 import { getCalendars } from "expo-localization";
+import { useAuth } from "../../contex/AuthContext";
+
 
 const SignUpPage = () => {
+  const { setTempToken } = useAuth();
+  const apiBaseUrl = process.env.EXPO_PUBLIC_API_URL;
   const router = useRouter();
   const [formData, setFormData] = useState({
     email: (""),
@@ -42,27 +46,32 @@ const SignUpPage = () => {
       );
       return;
     }
-    setFormData({
-      ...formData, 
-      timezone: deviceTimeZone
-    })
+    const payload = {
+      ...formData,
+      timeZone: deviceTimeZone,
+    };
     try{
-      const response = await fetch(`${apiBaseUrl}/api/auth/sign-in`,{
+      const response = await fetch(`${apiBaseUrl}/api/auth/sign-up`,{
         method:"POST",
-        body:JSON.stringify(formData)
+        body:JSON.stringify(payload),
+        headers: {
+        "Content-Type": "application/json",
+      },
       })
       if(!response.ok){
         Alert.alert("something went bad please try again later");
       }
+    
       const responseData = await response.json()
       if(responseData.message = "User created successfully"){
         Alert(responseData.message);
       }
-      // need to store temp token in authcontext
-
+      setTempToken(responseData.tempToken);
       router.push("/two-factor")
     }
     catch(e){
+        console.log("SIGN UP ERROR:", e);
+        console.log("API BASE URL:", apiBaseUrl);
         Alert.alert("please try again later something went wrong")
     }
   }
@@ -130,7 +139,7 @@ const SignUpPage = () => {
                 </Text>
             </Pressable>
             </View>
-    
+                    
         </View>
   );
 };
