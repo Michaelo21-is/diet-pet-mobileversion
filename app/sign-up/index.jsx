@@ -14,12 +14,13 @@ const SignUpPage = () => {
     password : (""),
     timezone : (null)
   });
+
   function checkIfTheDeatilsValid(){
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     if (!formData.email.trim()) {
-                Alert.alert("Missing email", "Email field should not be empty");
-                return false;
+          Alert.alert("Missing email", "Email field should not be empty");
+          return false;
         }
     if(!emailRegex.test(formData.email)){
       Alert.alert("Invalid email", "Please enter a valid email address");
@@ -35,6 +36,7 @@ const SignUpPage = () => {
     }  
         return true;
     }
+    
   async function handleOnSubmit(){
     const checkIfUserDataValid = checkIfTheDeatilsValid();
     if(!checkIfUserDataValid)return;
@@ -60,11 +62,14 @@ const SignUpPage = () => {
       })
       if(!response.ok){
         Alert.alert("something went bad please try again later");
+        return;
       }
     
       const responseData = await response.json()
-      if(responseData.message = "User created successfully"){
-        Alert(responseData.message);
+      console.log(responseData);
+      if(responseData.message !== "User created successfully"){
+        Alert.alert(responseData.message);
+        return;
       }
       setTempToken(responseData.tempToken);
       router.push("/two-factor")
