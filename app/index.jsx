@@ -1,6 +1,8 @@
 import { Text, View } from "react-native";
 import { useEffect, useState } from "react";
 import { Redirect } from "expo-router";
+import axios from "axios";
+import { accessToken, setAccessToken } from "../contex/AuthContext"
 
 const HomePage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
@@ -15,11 +17,13 @@ const HomePage = () => {
       }
 
       try {
-        const response = await fetch(`${apiBaseUrl}/api/user/isLogedIn`, {
-          method: "GET",
+        const response = await axios.get(`${apiBaseUrl}/api/user/isLogedIn`, {
+          headers: {
+            accessToken: accessToken,
+          },
         });
 
-        const data = await response.json();
+        const data = await response.data;
         const loggedIn = Boolean(data?.isLogedIn);
 
         setIsLoggedIn(loggedIn);

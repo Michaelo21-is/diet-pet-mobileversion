@@ -3,6 +3,7 @@ import { Alert, Pressable, Text, TextInput, View } from "react-native";
 import { useAuth } from "../../contex/AuthContext";
 import * as SecureStore from "expo-secure-store";
 import { router } from "expo-router";
+import axios from 'axios';
 
 const TwoFactorPage = () => {
   const apiBaseUrl = process.env.EXPO_PUBLIC_API_URL;  
@@ -33,38 +34,58 @@ const TwoFactorPage = () => {
 
   async function handleOnSubmit() {
     if (code.length !== 6) {
-      Alert.alert("code length should be 6");
+      Alert.alert("Code length should be 6");
       return;
     }
-    try {
-      const response = await fetch(`${apiBaseUrl}/api/auth/validate_two_factor`, {
-        method: "POST",
-        body: JSON.stringify({ code }),
-        headers: {
-          "Content-Type": "application/json",
-          tempToken: tempToken,
-        },
-      });
 
-      if (!response.ok) {
-        Alert.alert("something went bad please try again later");
-        return;
-      }
-      const responseData = await response.json();
+    try {
+      const response = await axios.post(
+        `${apiBaseUrl}/api/auth/validate_two_factor?code=${encodeURIComponent(code)}`,
+        null,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            tempToken: tempToken,
+          },
+        }
+      );
+
+      const responseData = response.data;
+
       if (responseData.message !== "2FA code verified successfully") {
         Alert.alert(responseData.message);
         return;
       }
+
       await SecureStore.setItemAsync("access_token", responseData.accessToken);
       await SecureStore.setItemAsync("refresh_token", responseData.refreshToken);
+
       setAccessToken(responseData.accessToken);
       setTempToken(null);
+
       router.push("/set-pet");
     } catch (e) {
-      Alert.alert("something went bad please try again later");
+      Alert.alert("Something went wrong, please try again later");
     }
   }
+  async function resendCodeToEmail(){
+    try {
+    await axios.post(
+      `${apiBaseUrl}/api/auth/set_two_factor?type=VERIFY_EMAIL&tokenType=TEMPORARY`,
+      null,
+      {
+        headers: {
+          tempToken: tempToken,
+        },
+      }
+    );
 
+    Alert.alert("We successfully resent the verification code to your email");
+  } catch (e) {
+    Alert.alert("Failed to resend to email, please try again");
+  }
+  }
+   
   return (
     <View className="flex-1 bg-[#efe1c6] px-6 pt-16 pb-8">
       <View className="absolute top-0 left-0 h-44 w-44 rounded-br-[80px] bg-[#b08968]/35" />

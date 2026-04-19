@@ -3,6 +3,7 @@ import { Pressable, Text, View, Alert, TextInput } from "react-native";
 import { useRouter } from "expo-router"
 import { getCalendars } from "expo-localization";
 import { useAuth } from "../../contex/AuthContext";
+import axios from "axios";
 
 
 const SignUpPage = () => {
@@ -53,20 +54,15 @@ const SignUpPage = () => {
       timeZone: deviceTimeZone,
     };
     try{
-      const response = await fetch(`${apiBaseUrl}/api/auth/sign-up`,{
-        method:"POST",
-        body:JSON.stringify(payload),
-        headers: {
-        "Content-Type": "application/json",
-      },
-      })
-      if(!response.ok){
-        Alert.alert("something went bad please try again later");
-        return;
-      }
-    
-      const responseData = await response.json()
-      console.log(responseData);
+      const response = await axios.post(`${apiBaseUrl}/api/auth/sign-up`, 
+        payload,{
+          headers:{
+            "Content-Type": "application/json",
+          }
+        }
+      )
+  
+      const responseData = response.data
       if(responseData.message !== "User created successfully"){
         Alert.alert(responseData.message);
         return;

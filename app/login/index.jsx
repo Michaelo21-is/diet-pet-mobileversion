@@ -3,6 +3,8 @@ import { TextInput, Alert, View, Text, Pressable } from "react-native";
 import { useAuth } from "../../contex/AuthContext";
 import { useRouter } from "expo-router"
 import * as SecureStore from 'expo-secure-store';
+import axios from "axios";
+
 const LoginPage = () => {
     const apiBaseUrl = process.env.EXPO_PUBLIC_API_URL;
     const router = useRouter();
@@ -33,18 +35,15 @@ const LoginPage = () => {
         const checkForm = checkingIfTheInputFromTheUser();
         if(checkForm === false)return;
         try{
-            const response = await fetch (`${apiBaseUrl}/api/auth/sign-in`,{
-                method: "POST",
-                body: JSON.stringify(formData),
-                headers: {
-                "Content-Type": "application/json",
-                },
-            })
-
-            if(!response.ok){
-                Alert.alert("something went bad please try again later")
-            }
-            const data = await response.json();
+            const response = await axios.post(`${apiBaseUrl}/api/auth/sign-in`,
+                formData,{
+                    headers:{
+                        "Content-Type": "application/json",
+                    }
+                }
+            );
+            
+            const data = response.data;
             if(data.message !== "Login successful"){
                 Alert.alert(data.message);
                 return;
