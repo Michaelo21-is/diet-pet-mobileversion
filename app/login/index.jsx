@@ -2,13 +2,13 @@ import { useState } from "react";
 import { TextInput, Alert, View, Text, Pressable } from "react-native";
 import { useAuth } from "../../contex/AuthContext";
 import { useRouter } from "expo-router"
-import * as SecureStore from 'expo-secure-store';
+import { setItemAsync } from "expo-secure-store";
 import axios from "axios";
 
 const LoginPage = () => {
     const apiBaseUrl = process.env.EXPO_PUBLIC_API_URL;
     const router = useRouter();
-    const { setAccessToken } = useAuth();
+    const { setAccessToken, setTempToken } = useAuth();
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -17,12 +17,12 @@ const LoginPage = () => {
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     if (!formData.email.trim()) {
-                Alert.alert("Missing email", "Email field should not be empty");
-                return false;
+        Alert.alert("Missing email", "Email field should not be empty");
+        return false;
         }
     if(!emailRegex.test(formData.email)){
-      Alert.alert("Invalid email", "Please enter a valid email address");
-    return false;
+        Alert.alert("Invalid email", "Please enter a valid email address");
+        return false;
     }  
     if (!formData.password.trim()) {
         Alert.alert("Missing password", "Password field should not be empty");
@@ -44,6 +44,14 @@ const LoginPage = () => {
             );
             
             const data = response.data;
+            if(data.message === "user need to verify email"){
+                setTempToken(data.tempToken);
+                router.push("/two-factor");
+            }
+            if(data.message === "need to setup the pet"){
+                saveTokens(data.accessToken, data.refreshToken);
+                router.push("/pet-setup")
+            }
             if(data.message !== "Login successful"){
                 Alert.alert(data.message);
                 return;
@@ -57,8 +65,8 @@ const LoginPage = () => {
         
     }
     async function saveTokens(accessToken, refreshToken) {
-        await SecureStore.setItemAsync('access_token', accessToken);
-        await SecureStore.setItemAsync('refresh_token', refreshToken);
+        await setItemAsync('access_token', accessToken);
+        await setItemAsync('refresh_token', refreshToken);
         setAccessToken(accessToken);
     };
     return (

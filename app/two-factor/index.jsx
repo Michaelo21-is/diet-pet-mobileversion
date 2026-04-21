@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Alert, Pressable, Text, TextInput, View } from "react-native";
 import { useAuth } from "../../contex/AuthContext";
-import * as SecureStore from "expo-secure-store";
+import { setItemAsync } from "expo-secure-store";
 import { router } from "expo-router";
 import axios from 'axios';
 
@@ -52,24 +52,26 @@ const TwoFactorPage = () => {
 
       const responseData = response.data;
 
+      console.log(response.data);
       if (responseData.message !== "2FA code verified successfully") {
         Alert.alert(responseData.message);
         return;
       }
 
-      await SecureStore.setItemAsync("access_token", responseData.accessToken);
-      await SecureStore.setItemAsync("refresh_token", responseData.refreshToken);
+      await setItemAsync("access_token", responseData.accessToken);
+      await setItemAsync("refresh_token", responseData.refreshToken);
 
       setAccessToken(responseData.accessToken);
       setTempToken(null);
 
-      router.push("/set-pet");
+      router.push("/pet-setup");
     } catch (e) {
       Alert.alert("Something went wrong, please try again later");
     }
   }
   async function resendCodeToEmail(){
     try {
+    console.log("print temp token: ", tempToken);
     await axios.post(
       `${apiBaseUrl}/api/auth/set_two_factor?type=VERIFY_EMAIL&tokenType=TEMPORARY`,
       null,
@@ -82,6 +84,7 @@ const TwoFactorPage = () => {
 
     Alert.alert("We successfully resent the verification code to your email");
   } catch (e) {
+    console.log(e);
     Alert.alert("Failed to resend to email, please try again");
   }
   }
@@ -124,9 +127,14 @@ const TwoFactorPage = () => {
           ))}
         </View>
 
+        <Pressable onPress={resendCodeToEmail} className="mt-5 self-start">
+        <Text className="text-sm font-semibold text-black underline">
+          Resend Verification Code
+        </Text>
+      </Pressable>
         <Pressable
           onPress={handleOnSubmit}
-          className="mt-8 rounded-2xl bg-[#7f5539] px-4 py-4"
+          className="mt-6 rounded-2xl bg-[#7f5539] px-4 py-4"
         >
           <Text className="text-center text-base font-bold tracking-wide text-[#fff8eb]">
             Confirm
