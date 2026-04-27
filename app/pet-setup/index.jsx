@@ -51,17 +51,22 @@ const PetSetupPage = () => {
 
   async function perfomPrefixToFindPetBreed(prefix) {
     try {
+      console.log("prefix:", prefix);
+      console.log("petType:", formData.petType);
       const response = await axios.get(
-        `${apiBaseUrl}/api/pet/perfom-prefix-for-breed`,
+        `${apiBaseUrl}/api/pet/perform-prefix-for-breed`,
         {
-          params: { prefix },
+          params: { 
+            prefix,
+            petType: formData.petType,
+          },
           headers: {
             accessToken: accessToken,
           },
         }
       );
-
       const responseData = response.data;
+      console.log(responseData); 
       setSuggestedPetBreed(responseData);
     } catch (e) {
       Alert.alert("something went bad please try again later");

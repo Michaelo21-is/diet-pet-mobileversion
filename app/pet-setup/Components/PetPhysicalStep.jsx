@@ -16,7 +16,7 @@ function BooleanField({ label, value, onSelect }) {
           }`}
         >
           <Text className="text-center text-base font-bold text-[#4a2f24]">
-            TRUE
+            YES
           </Text>
         </Pressable>
 
@@ -29,7 +29,7 @@ function BooleanField({ label, value, onSelect }) {
           }`}
         >
           <Text className="text-center text-base font-bold text-[#4a2f24]">
-            FALSE
+            NO
           </Text>
         </Pressable>
       </View>
@@ -44,7 +44,7 @@ export default function PetPhysicalStep({ formData, setFormData }) {
 
     setFormData((prev) => ({
       ...prev,
-      petWeightKg: normalized ? Number(normalized) : null,
+      petWeightKg: normalized,
     }));
   }
 
@@ -68,9 +68,7 @@ export default function PetPhysicalStep({ formData, setFormData }) {
             </Text>
             <TextInput
               value={
-                formData?.petWeightKg === null || formData?.petWeightKg === undefined
-                  ? ""
-                  : String(formData.petWeightKg)
+                formData.petWeightKg
               }
               onChangeText={handleWeightChange}
               keyboardType="decimal-pad"

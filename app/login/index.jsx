@@ -31,38 +31,47 @@ const LoginPage = () => {
     
         return true;
     }
-    async function handleOnSubmit(){
+    async function handleOnSubmit() {
         const checkForm = checkingIfTheInputFromTheUser();
-        if(checkForm === false)return;
-        try{
-            const response = await axios.post(`${apiBaseUrl}/api/auth/sign-in`,
-                formData,{
-                    headers:{
-                        "Content-Type": "application/json",
-                    }
-                }
-            );
-            
-            const data = response.data;
-            if(data.message === "user need to verify email"){
-                setTempToken(data.tempToken);
-                router.push("/two-factor");
-            }
-            if(data.message === "need to setup the pet"){
-                saveTokens(data.accessToken, data.refreshToken);
-                router.push("/pet-setup")
-            }
-            if(data.message !== "Login successful"){
-                Alert.alert(data.message);
-                return;
-            }
-            router.push("/")
-        }
-        catch(e){
+        if (checkForm === false) return;
 
+        try {
+            const response = await axios.post(
+            `${apiBaseUrl}/api/auth/sign-in`,
+            formData,
+            {
+                headers: {
+                "Content-Type": "application/json",
+                },
+            }
+            );
+
+            const data = response.data;
+            console.log("response data:", data);
+
+            if (data.message === "user need to verify email") {
+            setTempToken(data.tempToken);
+            router.push("/two-factor");
+            return;
+            }
+
+            if (data.message === "need to setup the pet") {
+            await saveTokens(data.accessToken, data.refreshToken);
+            router.push("/pet-setup");
+            return;
+            }
+
+            if (data.message !== "Login successful") {
+            Alert.alert(data.message);
+            return;
+            }
+
+            await saveTokens(data.accessToken, data.refreshToken);
+            router.push("/");
+        } catch (e) {
+            console.log("login error:", e);
+            Alert.alert("Login failed");
         }
-        saveTokens(data.accessToken, data.refreshToken);
-        
     }
     async function saveTokens(accessToken, refreshToken) {
         await setItemAsync('access_token', accessToken);

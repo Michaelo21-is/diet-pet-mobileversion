@@ -1,12 +1,13 @@
 import { Text, View } from "react-native";
 import { useEffect, useState } from "react";
-import { Redirect } from "expo-router";
+import { Redirect, useRouter } from "expo-router";
 import axios from "axios";
-import { accessToken, setAccessToken } from "../contex/AuthContext"
+import { useAuth } from "../contex/AuthContext"
 
 const HomePage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
-
+  const router = useRouter();
+  const { accessToken } = useAuth();
   useEffect(() => {
     const checkIsLoggedIn = async () => {
       const apiBaseUrl = process.env.EXPO_PUBLIC_API_URL;
