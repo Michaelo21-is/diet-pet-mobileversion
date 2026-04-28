@@ -7,6 +7,10 @@ import PetPhysicalStep from "./Components/PetPhysicalStep";
 import PetTypeStep from "./Components/PetTypeStep";
 import ProgressHeader from "./Components/ProgressHeader";
 import NavigationButtons from "./Components/NavigationButtons";
+import { refreshAccessToken } from "../../services/refreshTokenServices";
+import { checkIfTheAccessTokenIsValid } from "../../services/checkIfTheAccessTokenIsValid";
+import { router } from "expo-router";
+import PetAiAnalysisResult from "./Components/PetAiAnalysisResult";
 
 const PetSetupPage = () => {
   const apiBaseUrl = process.env.EXPO_PUBLIC_API_URL;
@@ -24,36 +28,61 @@ const PetSetupPage = () => {
   });
 
   const [step, setStep] = useState(1);
-  const { accessToken } = useAuth();
+  const { accessToken, setAccessToken } = useAuth();
   const [suggestedPetBreed, setSuggestedPetBreed] = useState([]);
+  const [result, setResult ] = useState([]);
 
   async function handleOnSubmit() {
-    try {
-      const response = await axios.post(
+    async function createPetRequest(token) {
+      const response = axios.post(
         `${apiBaseUrl}/api/pet/create-new-pet`,
         formData,
         {
           headers: {
             "Content-Type": "application/json",
-            accessToken: accessToken,
+            accessToken: token,
           },
         }
       );
+      setResult((await response).data);
+    }
 
-      const responseData = response.data;
-      console.log("pet created successfully", responseData);
+  try {
+    const tokenResponse = await checkIfTheAccessTokenIsValid({accessToken});
+    if(tokenResponse.shouldNavigateToLogin){
+      router.push("/login");
+      return;
+    }
+    if(tokenResponse.shouldSetAccessToken){
+      setAccessToken(tokenResponse.token)
+    }
+    await createPetRequest(tokenResponse.token);
+  } catch (e) {
+    if (e.response?.status !== 403) {
+      router.push("/login");
+      return;
+    }
+
+    try {
+      const newAccessToken = await refreshAccessToken();
+      setAccessToken(newAccessToken);
+      const retryResponse = await createPetRequest(newAccessToken);
+
+      console.log("pet created successfully after refresh", retryResponse.data);
       Alert.alert("pet created successfully");
-    } catch (e) {
-      console.log("failed to create new pet check the error", e);
-      Alert.alert("something went bad please try again later");
+      router.push("/");
+
+    } catch (refreshError) {
+      console.log("failed to refresh token or retry request:", refreshError);
+      Alert.alert("please login again");
+      router.push("/login");
     }
   }
+}
 
   async function perfomPrefixToFindPetBreed(prefix) {
-    try {
-      console.log("prefix:", prefix);
-      console.log("petType:", formData.petType);
-      const response = await axios.get(
+    function perfomPrefixRequest(token){
+      return await axios.get(
         `${apiBaseUrl}/api/pet/perform-prefix-for-breed`,
         {
           params: { 
@@ -65,19 +94,40 @@ const PetSetupPage = () => {
           },
         }
       );
+    }
+    try {
+      const tokenResponse = await checkIfTheAccessTokenIsValid({ accessToken });
+      if(tokenResponse.shouldNavigateToLogin){
+        router.push("/login");
+        return;
+      }
+      if(tokenResponse.shouldSetAccessToken){setAccessToken(tokenResponse.token);}
+      const response = await perfomPrefixRequest(tokenResponse.token);
       const responseData = response.data;
-      console.log(responseData); 
       setSuggestedPetBreed(responseData);
     } catch (e) {
-      Alert.alert("something went bad please try again later");
-      console.log("something went bad check the server", e);
+      if(e.response.status !== 403){
+          router.push("/login");
+          return;
+      }
+      try{
+        const newAccessToken = await refreshAccessToken();
+        setAccessToken(newAccessToken);
+        const response = await perfomPrefixRequest(accessToken);
+        const responseData = response.data;
+        setSuggestedPetBreed(responseData);
+      }
+      catch(e){
+        router.push("/login");
+      }
     }
   }
 
   return (
     <View style={{ flex: 1 }}>
+      { step < 4 &&
       <ProgressHeader step={step} setStep={setStep} totalSteps={3} />
-
+      }
       {step === 1 && (
         <PetTypeStep
           formData={formData}
@@ -98,12 +148,16 @@ const PetSetupPage = () => {
       {step === 3 && (
         <PetPhysicalStep formData={formData} setFormData={setFormData} />
       )}
-
+      {step < 4  &&
       <NavigationButtons
         step={step}
         setStep={setStep}
         handleOnSubmit={handleOnSubmit}
       />
+      }
+      {step === 4 && (
+        <PetAiAnalysisResult result={result} setStep={setStep}/>
+      )}
       
     </View>
   );

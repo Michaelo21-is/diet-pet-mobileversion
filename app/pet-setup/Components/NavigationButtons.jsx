@@ -3,9 +3,8 @@ import { Pressable, Text, View } from "react-native";
 export default function NavigationButtons({ step, setStep, handleOnSubmit }) {
   const isFirstStep = step <= 1; 
   function handleNext() {
-    if (step >= 3) {
+    if (step === 3) {
       handleOnSubmit();
-      return;
     }
 
     setStep((prev) => prev + 1);

@@ -1,10 +1,8 @@
 import axios from "axios";
 import { getItemAsync, setItemAsync } from "expo-secure-store";
 import { router } from "expo-router";
-import { useAuth } from "../contex/AuthContext";
 export async function refreshAccessToken(){
     const apiBaseUrl = process.env.EXPO_PUBLIC_API_URL;
-    const { setAccessToken } = useAuth();
     const refreshToken = await getItemAsync("refreshToken");
     if(!refreshToken){
         router.push("login");
@@ -24,5 +22,5 @@ export async function refreshAccessToken(){
     };
     await setItemAsync("accessToken", responseData.accessToken);
     await setItemAsync("refreshToken", responseData.refreshToken);
-    return accessToken;
+    return responseData.accessToken;
 }

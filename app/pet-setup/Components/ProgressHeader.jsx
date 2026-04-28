@@ -1,7 +1,6 @@
 import { Pressable, Text, View } from "react-native";
 
 export default function ProgressHeader({ step, setStep, totalSteps = 3 }) {
-  const isFirstStep = step <= 1;
 
   return (
     <View className="absolute left-0 right-0 top-0 z-30 px-6 pt-12 mt-4">
