@@ -9,7 +9,6 @@ import {
   TextInput,
   View,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 
@@ -42,47 +41,6 @@ export default function PetDetailsStep({
     setIsBreedFocused(false);
   }
 
-  async function handlePickPetImage(source) {
-  try {
-    const permissionResponse =
-      source === "camera"
-        ? await ImagePicker.requestCameraPermissionsAsync()
-        : await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (permissionResponse.status !== "granted") {
-      Alert.alert(
-        source === "camera"
-          ? "Please allow camera access to take pet image"
-          : "Please allow photo access to upload pet image"
-      );
-      return;
-    }
-
-    const result =
-      source === "camera"
-        ? await ImagePicker.launchCameraAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            quality: 0.7,
-          })
-        : await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            quality: 0.7,
-          });
-
-    if (result.canceled || !result.assets?.[0]?.uri) {
-      return;
-    }
-
-    setFormData((prev) => ({
-      ...prev,
-      petImage: result.assets[0].uri,
-    }));
-  } catch (e) {
-    Alert.alert("Failed to pick image, please try again");
-  }
-}
 
   const showBreedDropdown =
     isBreedFocused &&
@@ -208,45 +166,8 @@ export default function PetDetailsStep({
           </View>
 
          <View className="mt-5">
-          <View className="mt-5">
-            <Text className="mb-2 text-sm font-semibold tracking-wide text-[#6f4e37]">
-              Pet Image (Optional)
-            </Text>
 
-            <Pressable
-              onPress={() =>
-                Alert.alert("Pet Image", "Choose image source", [
-                  {
-                    text: "Camera",
-                    onPress: () => handlePickPetImage("camera"),
-                  },
-                  {
-                    text: "Gallery",
-                    onPress: () => handlePickPetImage("gallery"),
-                  },
-                  {
-                    text: "Cancel",
-                    style: "cancel",
-                  },
-                ])
-      }
-      className="rounded-2xl border border-dashed border-[#7f5539] bg-[#f1ddc3] px-4 py-4"
-        >
-          <Text className="text-center text-base font-bold tracking-wide text-[#5b3a29]">
-            Upload Pet Image
-          </Text>
-        </Pressable>
-
-        {formData?.petImage ? (
-          <Image
-            source={{ uri: formData.petImage }}
-            className="mt-3 h-40 w-full rounded-2xl"
-            resizeMode="cover"
-          />
-        ) : null}
-      </View>
-
-    </View>
+        </View>
         </View>
       </ScrollView>
     </View>

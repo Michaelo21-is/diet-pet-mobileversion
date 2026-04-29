@@ -11,6 +11,8 @@ import { refreshAccessToken } from "../../services/refreshTokenServices";
 import { checkIfTheAccessTokenIsValid } from "../../services/checkIfTheAccessTokenIsValid";
 import { router } from "expo-router";
 import PetAiAnalysisResult from "./Components/PetAiAnalysisResult";
+import DogWalkOutRecomendation from "./Components/DogWalkOutRecomendation";
+import AiReview from "./Components/AiReview";
 
 const PetSetupPage = () => {
   const apiBaseUrl = process.env.EXPO_PUBLIC_API_URL;
@@ -22,7 +24,6 @@ const PetSetupPage = () => {
     petWeightKg: null,
     birthDate: null,
     neutered: null,
-    petImage: null,
     tendToBeFat: null,
     hasYard: null,
   });
@@ -81,7 +82,7 @@ const PetSetupPage = () => {
 }
 
   async function perfomPrefixToFindPetBreed(prefix) {
-    function perfomPrefixRequest(token){
+    async function perfomPrefixRequest(token){
       return await axios.get(
         `${apiBaseUrl}/api/pet/perform-prefix-for-breed`,
         {
@@ -156,7 +157,13 @@ const PetSetupPage = () => {
       />
       }
       {step === 4 && (
-        <PetAiAnalysisResult result={result} setStep={setStep}/>
+        <PetAiAnalysisResult result={result} setStep={setStep} petName={formData.petName}/>
+      )}
+      { step === 5 && (
+        <DogWalkOutRecomendation result={result} setStep={setStep} petName={formData.petName}/>
+      )}
+      { step === 6 && (
+        <AiReview result={result}/>
       )}
       
     </View>

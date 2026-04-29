@@ -13,7 +13,7 @@ function MacroRow({ label, value }) {
   );
 }
 
-export default function PetAiAnalysisResult({ result, setStep, petName }) {
+export default function DogWalkOutRecomendation({ result, setStep, petName }) {
   
 
   return (
@@ -27,21 +27,21 @@ export default function PetAiAnalysisResult({ result, setStep, petName }) {
             AI Analysis Result
           </Text>
           <Text className="mt-2 text-base text-[#7f5d49]">
-            Recommended daily nutrition for {petName}
+            Recommended daily walk plan for {petName}
           </Text>
 
           <View className="mt-5 rounded-2xl border border-[#b08968] bg-[#f1ddc3] px-4 py-4">
             <Text className="text-sm font-semibold tracking-wide text-[#6f4e37]">
-              Recommended Diet
+              dog walkout recomnedition 
             </Text>
             <Text className="mt-1 text-base font-bold text-[#4a2f24]">
               Personalized plan based on your pet details
             </Text>
           </View>
 
-          <MacroRow label="Calories" value={result.calorie} />
-          <MacroRow label="Protein" value={result.protein} />
-          <MacroRow label="Fat" value={result.fat} />
+          <MacroRow label="recommended walkout distance km" value={result.recommendedWalkoutDistance} />
+          <MacroRow label="recommended walks per day" value={result.recommendedWalksPerDay} />
+          <MacroRow label="recommended walk duration minutes" value={result.recommendedWalkDurationMinutes} />
 
           <Pressable
             onPress={() => setStep((prev) => 1 + prev)}
