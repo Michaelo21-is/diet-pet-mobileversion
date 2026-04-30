@@ -5,6 +5,7 @@ import axios from "axios";
 import { useAuth } from "../contex/AuthContext"
 import { checkIfTheAccessTokenIsValid } from "../services/checkIfTheAccessTokenIsValid";
 import { refreshAccessToken } from "../services/refreshTokenServices"
+import  Navbar  from "./Component/Navbar"
 
 const HomePage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
@@ -58,11 +59,12 @@ const HomePage = () => {
   }
 
   return (
-    <View className="items-center justify-center bg-black flex-1">
-      <Text className="bg-white text-black justify-center">
-        {isLoggedIn ? "Welcome back" : "App loaded"}
-      </Text>
-      <Text>hello world</Text>
+     <View className="flex-1 bg-[#efe1c6] px-6 pt-16 pb-32">
+        <View className="absolute top-0 left-0 h-44 w-44 rounded-br-[80px] bg-[#b08968]/35" />
+        <View className="absolute bottom-0 right-0 h-52 w-52 rounded-tl-[100px] bg-[#7f5539]/20" />
+
+        <Navbar/>  
+
     </View>
   );
 };
