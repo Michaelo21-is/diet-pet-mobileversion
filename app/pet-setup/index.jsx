@@ -157,7 +157,7 @@ const PetSetupPage = () => {
       />
       }
       {step === 4 && (
-        <PetAiAnalysisResult result={result} setStep={setStep} petName={formData.petName}/>
+        <PetAiAnalysisResult result={result} setStep={setStep} petName={formData.petName} petType={formData.petType}/>
       )}
       { step === 5 && (
         <DogWalkOutRecomendation result={result} setStep={setStep} petName={formData.petName}/>

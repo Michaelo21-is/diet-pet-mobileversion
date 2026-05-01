@@ -13,7 +13,15 @@ function MacroRow({ label, value }) {
   );
 }
 
-export default function PetAiAnalysisResult({ result, setStep, petName }) {
+export default function PetAiAnalysisResult({ result, setStep, petName, petType }) {
+
+  function handleOnSubmit(){
+    if(petType !== DOG){
+      setStep((prev) => prev + 2);
+      return;
+    } 
+    setStep((prev) => prev + 1)
+  }
   
 
   return (
@@ -44,7 +52,7 @@ export default function PetAiAnalysisResult({ result, setStep, petName }) {
           <MacroRow label="Fat" value={result.fat} />
 
           <Pressable
-            onPress={() => setStep((prev) => 1 + prev)}
+            onPress={() => setStep(handleOnSubmit)}
             className="mt-6 rounded-2xl bg-[#7f5539] px-6 py-4 shadow-xl"
           >
             <Text className="text-center text-base font-extrabold tracking-wide text-[#fff8eb]">
