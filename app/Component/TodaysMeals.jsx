@@ -1,4 +1,7 @@
+import { View, Text } from "react-native"
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 export default function TodayMeals({ foodName, calorie, protein, fat , intakeTime}){
+  return(
     <View className="rounded-3xl bg-white p-3 shadow-sm">
                   <View className="flex-row">
                     <View className="mr-3 h-20 w-20 items-center justify-center rounded-2xl bg-[#f7c58f]">
@@ -19,4 +22,5 @@ export default function TodayMeals({ foodName, calorie, protein, fat , intakeTim
                     </View>
                   </View>
                 </View>
+  )
 }

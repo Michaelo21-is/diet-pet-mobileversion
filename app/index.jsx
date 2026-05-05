@@ -30,6 +30,23 @@ const HomePage = () => {
     dailyIntakeWalkoutDistance: 0,
     dailyIntakeWalkoutTime: 0,
   });
+  const [ petEatActivity, setPetEatActivity ] = useState({
+    foodName: [],
+    grams: [],
+    calories: [],
+    fat: [],
+    protein: [],
+    foodImagePath: [],
+    AiReview: [],
+    time: []
+  }); 
+  const [ DogWalkoutActivity, setDogWalkoutActivity ] = useState({
+    walkoutDistance: [],
+    walkoutTimeMin: [],
+    calorieBurned: [],
+    AiReview: [],
+    time: [],
+  });
   const [petType, setPetType] = useState("");
   const router = useRouter();
   const apiBaseUrl = process.env.EXPO_PUBLIC_API_URL;
@@ -110,9 +127,44 @@ const HomePage = () => {
         router.push("/login");
         return;
       }
-      const newAccessToken = await refreshAccessToken();
-      await getPetDailyTrackResponse(newAccessToken);
-      setAccessToken(newAccessToken);
+      try{
+        const newAccessToken = await refreshAccessToken();
+        await getPetDailyTrackResponse(newAccessToken);
+        setAccessToken(newAccessToken);
+      }
+      catch(e){
+        console.log("refreshToken Failed, error message: ", e);
+        router.push("/login");
+      }
+    }
+  }
+  async function getPetDailyActivity(validToken){
+    async function requestPetDailyActivity(validToken){
+      const response = await axios.get(`${apiBaseUrl}/api/pet/get-pet-daily-activity`,
+        { headers:{
+          accessToken: validToken,
+        }}
+      );
+      const responseData = await response.data;
+      console.log(responseData);
+    }
+    try{
+      await requestPetDailyActivity(validToken);
+    }
+    catch(e){
+      if(e.response.status !== 403){
+        router.push("/login");
+        return; 
+      }
+      try{
+        const newAccessToken = await refreshAccessToken();
+        await requestPetDailyActivity(newAccessToken);
+        setAccessToken(newAccessToken);
+      }
+      catch(e){
+        console.log("refreshToken Failed, error message: ", e);
+        router.push("/login");
+      }
     }
   }
 
@@ -123,6 +175,7 @@ const HomePage = () => {
         return;
       }
       await loadPetDailyTrack(validToken);
+      await getPetDailyActivity(validToken)
     }
     initHomePage();
   }, []);
@@ -148,9 +201,6 @@ const HomePage = () => {
                 <Text className="text-2xl font-extrabold text-[#2d2538]">DietPet AI</Text>
                 <Text className="text-xs text-[#9a94a4]">{petType} wellness tracker</Text>
               </View>
-            </View>
-            <View className="rounded-2xl bg-white px-3 py-2">
-              <View className="flex-row items-center"><MaterialCommunityIcons name="fire" size={14} color="#f4a259" /><Text className="ml-1 text-sm font-semibold text-[#3b3741]">15</Text></View>
             </View>
           </View>
 
@@ -205,7 +255,9 @@ const HomePage = () => {
 
           <View className="mb-4">
             <Text className="mb-3 text-2xl font-bold text-[#2d2538]">Today’s Meals</Text>
-              <TodayMeals foodName={} protein={} fat={} calorie={} intakeTime={} />
+              <TodayMeals foodName={petEatActivity.foodName} protein={petEatActivity.protein} fat={petEatActivity.fat}
+               calorie={petEatActivity.calories} intakeTime={petEatActivity.time} />
+            
           </View>
 
       
