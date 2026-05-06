@@ -9,7 +9,7 @@ export default function ProgressRing({value, total,color,size = 86,stroke = 8, i
   return (
     <View
       style={{ width: size, height: size }}
-      className="items-center justify-center rounded-full bg-[#efeaf2]"
+      className="items-center justify-center rounded-full bg-[#f1dfcb]"
     >
       <View
         className="absolute rounded-full"
@@ -17,7 +17,7 @@ export default function ProgressRing({value, total,color,size = 86,stroke = 8, i
           width: size,
           height: size,
           borderWidth: stroke,
-          borderColor: "#d8d3df",
+          borderColor: "#d9c4ae",
         }}
       />
 
@@ -35,7 +35,7 @@ export default function ProgressRing({value, total,color,size = 86,stroke = 8, i
       />
 
       <View
-        className="items-center justify-center rounded-full bg-white"
+        className="items-center justify-center rounded-full bg-[#fffaf3]"
         style={{ width: size - 24, height: size - 24 }}
       >
         <MaterialCommunityIcons name={iconName} size={20} color={color} />

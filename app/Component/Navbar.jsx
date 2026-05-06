@@ -12,7 +12,7 @@ export default function Navbar({ pageNum }){
 
     return(
         <View className="absolute bottom-9">
-            <View className="h-20 flex-row items-center rounded-[40px] border-white bg-[#b08968]/35 px-5 shadow-2xl gap-6 ml-4">
+            <View className="h-20 flex-row items-center rounded-[40px] border-[#d9c4ae] bg-[#7f5539]/25 px-5 shadow-2xl gap-6 ml-4">
                 {navItems.map((item, index) => {
                     const isActive = index === pageNum;
                     return ( 
@@ -20,13 +20,13 @@ export default function Navbar({ pageNum }){
                             key={item.key}
                             onPress={item.onPress}
                             className={`items-center justify-center ${
-                                isActive ? "h-12 w-12 rounded-full bg-[#b08968]" : "h-11 w-11"
+                                isActive ? "h-12 w-12 rounded-full bg-[#7f5539]" : "h-11 w-11"
                             }`}
                         >
                             <Feather
                                 name={item.icon}
                                 size={22}
-                                color={isActive ? "#111920" : "#f7f5ef"}
+                                color={isActive ? "#fffaf3" : "#f1dfcb"}
                             />
                         </Pressable>
                     );

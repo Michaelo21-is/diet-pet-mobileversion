@@ -13,13 +13,13 @@ const weekDays = [
 function DayPill({ day, date, active, accent }) {
   return (
     <View className="mr-2 items-center">
-      <Text className="mb-1 text-[11px] text-[#908d98]">{day}</Text>
+      <Text className="mb-1 text-[11px] text-[#8b6a53]">{day}</Text>
       <View
-        className={`h-12 w-12 items-center justify-center rounded-2xl border bg-white ${
-          active ? "border-[#93d36b]" : "border-[#e4deeb]"
+        className={`h-12 w-12 items-center justify-center rounded-2xl border bg-[#fffaf3] ${
+          active ? "border-[#b86a3f]" : "border-[#e2d2bf]"
         }`}
       >
-        <Text className="text-sm font-semibold" style={{ color: active ? accent : "#6d6875" }}>
+        <Text className="text-sm font-semibold" style={{ color: active ? accent : "#7a614d" }}>
           {date}
         </Text>
       </View>
@@ -27,16 +27,16 @@ function DayPill({ day, date, active, accent }) {
   );
 }
 
-export default function CalenderForHomePage({ className = "mb-5" }) {
+export default function CalenderForHomePage() {
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} className={className}>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-4 px-4">
       {weekDays.map((item, idx) => (
         <DayPill
           key={`${item.day}-${item.date}`}
           day={item.day}
           date={item.date}
           active={idx === 2}
-          accent={idx === 2 ? "#60bf5d" : "#d95d5d"}
+          accent={idx === 2 ? "#b86a3f" : "#8c7b5a"}
         />
       ))}
     </ScrollView>

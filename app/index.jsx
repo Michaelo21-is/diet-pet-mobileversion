@@ -187,40 +187,40 @@ const HomePage = () => {
   }
 
   return (
-    <View className="flex-1 bg-[#efe1c6] px-6 pt-16 pb-32">
+    <View className="flex-1 bg-[#efe1c6]">
         <View className="absolute top-0 left-0 h-44 w-44 rounded-br-[80px] bg-[#b08968]/35" />
         <View className="absolute bottom-0 right-0 h-52 w-52 rounded-tl-[100px] bg-[#7f5539]/20" />
 
-        <View className="px-6 pt-16">
+        <View className="px-6 pt-16 mt-5">
           <View className="mb-5 flex-row items-center justify-between">
             <View className="flex-row items-center">
-              <View className="mr-2 h-9 w-9 items-center justify-center rounded-xl bg-[#2d2538]">
+              <View className="mr-2 h-9 w-9 items-center justify-center rounded-xl bg-[#7f5539]">
                 <MaterialCommunityIcons name="paw" size={19} color="#ffffff" />
               </View>
               <View>
-                <Text className="text-2xl font-extrabold text-[#2d2538]">DietPet AI</Text>
-                <Text className="text-xs text-[#9a94a4]">{petType} wellness tracker</Text>
+                <Text className="text-2xl font-extrabold text-[#5a3e2b]">DietPet AI</Text>
+                <Text className="text-xs text-[#8b6a53]">{petType} wellness tracker</Text>
               </View>
             </View>
           </View>
 
-          <CalenderForHomePage className="mb-5" />
+          <CalenderForHomePage/>
         </View>
-
-        <View className="rounded-t-[30px] bg-[#f7f6fb] px-6 pt-7">
-          <View className="mb-4 rounded-3xl bg-white px-5 py-5 shadow-sm">
+      <ScrollView className="px-6">
+        <View className="rounded-t-[30px] bg-[#f7ede0] px-6 pt-7">
+          <View className="mb-4 rounded-3xl bg-[#fffaf3] px-5 py-5 shadow-sm">
             <View className="flex-row items-center justify-between">
               <View>
                 <View className="flex-row items-end">
-                  <Text className="text-5xl font-extrabold text-[#2b2437]">{Math.round(petDailyDietTrack.caloriesBalance)}</Text>
-                  <Text className="mb-2 text-2xl text-[#9e99a7]">/{Math.round(petDailyDietTrack.caloriesIntake)}</Text>
+                  <Text className="text-5xl font-extrabold text-[#5a3e2b]">{Math.round(petDailyDietTrack.caloriesBalance)}</Text>
+                  <Text className="mb-2 text-2xl text-[#9a7a64]">/{Math.round(petDailyDietTrack.caloriesIntake)}</Text>
                 </View>
-                <Text className="mt-1 text-sm text-[#8f8b97]">Calories eaten</Text>
+                <Text className="mt-1 text-sm text-[#8b6a53]">Calories eaten</Text>
               </View>
               <ProgressRing
                 value={petDailyDietTrack.caloriesIntake}
                 total={petDailyDietTrack.caloriesBalance}
-                color="#25222d"
+                color="#7f5539"
                 size={104}
                 stroke={9}
                 iconName="fire"
@@ -234,7 +234,7 @@ const HomePage = () => {
               intake={petDailyDietTrack.proteinIntake}
               total={petDailyDietTrack.proteinBalance}
               unit={"g"}
-              color={"#ef6f6c"}
+              color={"#b86a3f"}
               icon={"food-drumstick"}
             />
             <MacroCard
@@ -242,26 +242,42 @@ const HomePage = () => {
               intake={petDailyDietTrack.fatIntake}
               total={petDailyDietTrack.fatBalance}
               unit={"g"}
-              color={"#6f9ceb"}
+              color={"#8c7b5a"}
               icon={"water-outline"}
             />
           </View>
 
           <View className="my-4 flex-row items-center justify-center">
-            <View className="h-2 w-2 rounded-full bg-[#3f3948]" />
-            <View className="mx-2 h-2 w-2 rounded-full bg-[#d8d3df]" />
-            <View className="h-2 w-2 rounded-full bg-[#d8d3df]" />
+            <View className="h-2 w-2 rounded-full bg-[#7f5539]" />
+            <View className="mx-2 h-2 w-2 rounded-full bg-[#d9c4ae]" />
+            <View className="h-2 w-2 rounded-full bg-[#d9c4ae]" />
           </View>
 
           <View className="mb-4">
-            <Text className="mb-3 text-2xl font-bold text-[#2d2538]">Today’s Meals</Text>
+            <Text className="mb-3 text-2xl font-bold text-[#5a3e2b]">Today’s Meals</Text>
               <TodayMeals foodName={petEatActivity.foodName} protein={petEatActivity.protein} fat={petEatActivity.fat}
                calorie={petEatActivity.calories} intakeTime={petEatActivity.time} />
             
           </View>
 
-      
-        </View>
+         
+
+        </View>  
+        </ScrollView>
+        <Pressable onPress={() => router.push("/analyze-image")}
+        className="absolute bottom-36 self-center flex-row items-center rounded-3xl border-2 border-[#7f5539]/10 bg-[#b08968]/30 px-5 py-3">
+          <Text className="text-xl text-center font-normal">
+            analyze food
+          </Text>
+
+          <MaterialCommunityIcons
+            className="ml-2"
+            name="camera-plus"
+            size={24}
+            color="#1f2937"
+          />
+        </Pressable>  
+
 
       <Navbar pageNum={0} />
     </View>
