@@ -1,51 +1,93 @@
-import { CameraView, useCameraPermissions } from 'expo-camera';
-import { useState } from 'react';
-import { Button, View } from 'react-native';
-export default function SetUpImage({setAnalyzedFoodPicture, analyzedFoodPicture}){
-    const [permission, requestPermission] = useCameraPermissions();
-    const [cameraOpen, setCameraOpen] = useState(false);
-    function handleOpenCamera(){
-        if(!permission.granted){
-            return(
-                <View className="p-5 justify-center">
-                    <Text className="text-black font-semibold text-md">
-                        We need your permission to open the camera
-                    </Text>
-                    <Button onPress={requestPermission} title='grant permission'/>
-                </View>
-            )
-        }
-        setCameraOpen(true);
-        if(cameraOpen){
-             return (
-            <View className="flex-1">
-                <CameraView
-                facing="front"
-                />
+import { CameraView, useCameraPermissions } from "expo-camera";
+import { Button, Image, Pressable, Text, View } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { useRef } from "react";
+import { useRouter } from "expo-router";
 
-                <View className="absolute bottom-10 w-full items-center">
-                <onPress
-                    onPress={() => setCameraOpen(false)}
-                    className="rounded-2xl bg-white px-6 py-3"
-                >
-                    <Text className="font-bold text-black">Close Camera</Text>
-                </onPress>
-                </View>
-            </View>
-            );
-        }
+export default function SetUpImage({ SetPicture, picture, onNext }) {
+  const [permission, requestPermission] = useCameraPermissions();
+  const router = useRouter();
+  const cameraRef = useRef(null);
+
+  async function takeAPicture() {
+    if (!cameraRef.current) {
+      return;
     }
-    return(
-        <View className="flex-1 bg-[#efe1c6] px-6 pt-16 pb-8">
-        <View className="absolute top-0 left-0 h-44 w-44 rounded-br-[80px] bg-[#b08968]/35" />
-        <View className="absolute bottom-0 right-0 h-52 w-52 rounded-tl-[100px] bg-[#7f5539]/20"/>
-            <View
-                className="mt-24"
-                contentContainerStyle={{ paddingBottom: 28 }}
-            >
 
-            </View>
-        </View>      
-    )
-    
+    try {
+      const data = await cameraRef.current.takePictureAsync();
+      SetPicture((prev) => ({
+      ...prev,
+      file: data.uri,
+      fileName: data.uri.split("/").pop(),
+      fileType:data.uri.split(".").pop().toLowerCase(),
+    }));
+    } catch (e) {
+      console.log("failed to take picture error message:", e);
+    }
+  }
+
+  if (!permission) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <Text>Loading camera permission...</Text>
+      </View>
+    );
+  }
+
+  if (!permission.granted) {
+    return (
+      <View className="flex-1 items-center justify-center p-5">
+        <Text className="mb-4 text-center text-black font-semibold">
+          We need your permission to open the camera
+        </Text>
+        <Button onPress={requestPermission} title="Grant permission" />
+      </View>
+    );
+  }
+
+  return (
+    <View className="flex-1">
+      {!picture ? (
+        <>
+          <CameraView ref={cameraRef} style={{ flex: 1 }} facing="back" />
+
+          <View className="absolute top-20 left-5">
+            <Pressable
+              className="rounded-3xl bg-white p-4"
+              onPress={() => router.push("/")}
+            >
+              <Ionicons name="arrow-back-sharp" size={24} color="black" />
+            </Pressable>
+          </View>
+
+          <View className="absolute bottom-14 w-full items-center">
+            <Pressable onPress={takeAPicture} className="rounded-full bg-white p-5">
+              <Text className="text-lg font-bold text-black">Take A Picture</Text>
+            </Pressable>
+          </View>
+        </>
+      ) : (
+        <>
+          <Image source={{ uri: picture }} style={{ flex: 1 }} resizeMode="cover" />
+
+          <View className="absolute bottom-14 w-full flex-row-reverse gap-4 px-5">
+            <Pressable
+              onPress={() => onNext()}
+              className="mr-2 w-28 items-center rounded-full bg-green-600 py-4"
+            >
+              <Text className="text-base font-bold text-white">Next</Text>
+            </Pressable>
+
+            <Pressable
+              onPress={() => SetPicture("")}
+              className="w-28 items-center rounded-full bg-white py-4"
+            >
+              <Text className="text-base font-bold text-black">Retake</Text>
+            </Pressable>
+          </View>
+        </>
+      )}
+    </View>
+  );
 }

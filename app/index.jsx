@@ -212,8 +212,8 @@ const HomePage = () => {
             <View className="flex-row items-center justify-between">
               <View>
                 <View className="flex-row items-end">
-                  <Text className="text-5xl font-extrabold text-[#5a3e2b]">{Math.round(petDailyDietTrack.caloriesBalance)}</Text>
-                  <Text className="mb-2 text-2xl text-[#9a7a64]">/{Math.round(petDailyDietTrack.caloriesIntake)}</Text>
+                  <Text className="text-5xl font-extrabold text-[#5a3e2b]">{Math.round(petDailyDietTrack.caloriesIntake)}</Text>
+                  <Text className="mb-2 text-2xl text-[#9a7a64]">/{Math.round(petDailyDietTrack.caloriesBalance)}</Text>
                 </View>
                 <Text className="mt-1 text-sm text-[#8b6a53]">Calories eaten</Text>
               </View>
@@ -264,7 +264,9 @@ const HomePage = () => {
 
         </View>  
         </ScrollView>
-        <Pressable onPress={() => router.push("/analyze-image")}
+        <Pressable onPress={
+            () => router.push("/analyze-image")
+          }
         className="absolute bottom-36 self-center flex-row items-center rounded-3xl border-2 border-[#7f5539]/10 bg-[#b08968]/30 px-5 py-3">
           <Text className="text-xl text-center font-normal">
             analyze food
