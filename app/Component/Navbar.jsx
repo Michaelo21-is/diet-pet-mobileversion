@@ -6,8 +6,8 @@ export default function Navbar({ pageNum }){
 
     const navItems = [
         { key: "home", icon: "home", onPress: () => router.push("/") },
-        { key: "settings", icon: "user", onPress: () => router.push("/") },
-        { key: "add", icon: "plus-square", onPress: () => router.push("/") },
+        { key: "settings", icon: "user", onPress: () => router.push("/user-setting") },
+        { key: "add", icon: "plus-square", onPress: () => router.push("/walkout-analyze") },
     ];
 
     return(
