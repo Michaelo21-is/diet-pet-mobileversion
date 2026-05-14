@@ -6,6 +6,7 @@ import { useAuth } from "../../contex/AuthContext";
 import { checkIfTheAccessTokenIsValid } from "../../services/checkIfTheAccessTokenIsValid";
 import { refreshAccessToken } from "../../services/refreshTokenServices";
 import { useRouter } from "expo-router";
+import ShowResult from "./Components/ShowResult";
 export default function walkoutAnalyze(){
     const router = useRouter();
     const apiBaseUrl = process.env.EXPO_PUBLIC_API_URL;
@@ -64,6 +65,9 @@ export default function walkoutAnalyze(){
             setForm={setForm}
             form={form}
         />
+        )}
+        {step == 1 && (
+        <ShowResult result={walkOutOverView} walkoutStats = {form}/>
         )}
     </View>
     );

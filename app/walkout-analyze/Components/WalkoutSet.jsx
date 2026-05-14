@@ -22,7 +22,7 @@ export default function WalkoutSetPage({handleOnSubmit, setForm, form}){
               <View className="absolute bottom-0 right-0 h-52 w-52 rounded-tl-[100px] bg-[#7f5539]/20" />
         
               <ScrollView
-                className="mt-32"
+                className="mt-40"
                 contentContainerStyle={{ paddingBottom: 28 }}
                 keyboardShouldPersistTaps="handled"
               >
@@ -75,9 +75,6 @@ export default function WalkoutSetPage({handleOnSubmit, setForm, form}){
                         <Text className={`text-md font-semibold ${form.activityLevel ? "text-[#4a2f24]" : "text-[#a88a74]"}`}>
                           {form.activityLevel || "Select activity level"}
                         </Text>
-                        <Text className="text-lg font-bold text-[#7f5539]">
-                          {isDropdownOpen ? "^" : "v"}
-                        </Text>
                       </View>
                     </Pressable>
 
@@ -87,7 +84,7 @@ export default function WalkoutSetPage({handleOnSubmit, setForm, form}){
                           <Pressable
                             key={level}
                             onPress={() => selectActivityLevel(level)}
-                            className={`px-4 py-4 ${index !== ACTIVITY_LEVEL_OPTIONS.length - 1 ? "border-b border-[#ead6bc]" : ""}`}
+                            className={`px-3 py-3 ${index !== ACTIVITY_LEVEL_OPTIONS.length - 1 ? "border-b border-[#ead6bc]" : ""}`}
                           >
                             <Text
                               className={`text-md font-semibold ${
@@ -107,7 +104,7 @@ export default function WalkoutSetPage({handleOnSubmit, setForm, form}){
                 </View>
                 </View>
               </ScrollView>
-              <View className = "absolute bottom-52 left-10 right-10">
+              <View className = "absolute bottom-40 left-10 right-10">
                 <Pressable className=" bg-[#7f5539]/80 p-5 rounded-2xl" onPress={handleOnSubmit}>
                     <Text className="text-white font-semibold text-lg text-center"> save </Text>
                 </Pressable>

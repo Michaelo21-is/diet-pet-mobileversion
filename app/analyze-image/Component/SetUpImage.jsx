@@ -74,14 +74,14 @@ export default function SetUpImage({ SetPicture, picture, onNext }) {
           <View className="absolute bottom-14 w-full flex-row-reverse gap-4 px-5">
             <Pressable
               onPress={() => onNext()}
-              className="mr-2 w-28 items-center rounded-full bg-green-600 py-4"
+              className="mr-2 w-28 items-center rounded-full bg-white py-4"
             >
-              <Text className="text-base font-bold text-white">Next</Text>
+              <Text className="text-base font-bold text-black">Next</Text>
             </Pressable>
 
             <Pressable
               onPress={() => SetPicture("")}
-              className="w-28 items-center rounded-full bg-white py-4"
+              className="w-28 items-center rounded-full bg-slate-50 py-4"
             >
               <Text className="text-base font-bold text-black">Retake</Text>
             </Pressable>
